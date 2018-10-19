@@ -1,15 +1,20 @@
 package br.com.caelum.ingresso.controller;
 
+import br.com.caelum.ingresso.clients.imdb.DetalheFilme;
+import br.com.caelum.ingresso.clients.imdb.ImdClient;
 import br.com.caelum.ingresso.dao.FilmeDao;
+import br.com.caelum.ingresso.dao.SessaoDao;
 import br.com.caelum.ingresso.model.Filme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 /**
@@ -21,6 +26,12 @@ public class FilmeController {
 
     @Autowired
     private FilmeDao filmeDao;
+
+    @Autowired
+    private ImdClient client;
+
+    @Autowired
+    private SessaoDao sessaoDao;
 
 
     @GetMapping({"/admin/filme", "/admin/filme/{id}"})
@@ -55,13 +66,29 @@ public class FilmeController {
 
 
     @GetMapping(value="/admin/filmes")
-    public ModelAndView lista(){
+    public ModelAndView lista() throws URISyntaxException {
 
         ModelAndView modelAndView = new ModelAndView("filme/lista");
 
         modelAndView.addObject("filmes", filmeDao.findAll());
-
         return modelAndView;
+    }
+
+    @GetMapping(value = "/filme/em-cartaz")
+    public ModelAndView filmesEmCartaz() {
+        ModelAndView view = new ModelAndView("filme/em-cartaz");
+        view.addObject("filmes", filmeDao.findAll());
+        return view;
+    }
+
+    @GetMapping(value = "/filme/{id}/detalhe")
+    public ModelAndView detalheFilme(@PathVariable("id") Integer id) {
+        ModelAndView view = new ModelAndView("filme/detalhe");
+        Filme filme = filmeDao.findOne(id);
+        Optional<DetalheFilme> detalheFilme = this.client.buscaDetalheFilme(filme, DetalheFilme.class);
+        view.addObject("sessoes", sessaoDao.buscaSessoesDoFilme(filme));
+        view.addObject("detalhes", detalheFilme.orElse(new DetalheFilme()));
+        return view;
     }
 
 

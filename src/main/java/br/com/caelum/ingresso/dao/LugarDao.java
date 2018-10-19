@@ -18,4 +18,10 @@ public class LugarDao {
     public void save(Lugar lugar) {
         manager.persist(lugar);
     }
+
+    public Lugar getLugarById(Integer id) {
+        return manager.createQuery("select l from Lugar l where l.id = :id", Lugar.class )
+                .setParameter("id", id)
+                .getSingleResult();
+    }
 }

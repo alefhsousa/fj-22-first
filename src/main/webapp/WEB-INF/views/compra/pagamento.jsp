@@ -23,13 +23,13 @@
 
                     <input type="hidden" name="ingressos[${status.index}].sessao.id" value="${ingresso.sessao.id}">
                     <input type="hidden" name="ingressos[${status.index}].lugar.id" value="${ingresso.lugar.id}">
-                    <input type="hidden" name="ingressos[${status.index}].tipoDeIngresso" value="${ingresso.tipoDeIngresso}">
+                    <input type="hidden" name="ingressos[${status.index}].tipoIngresso" value="${ingresso.tipoIngresso}">
                     <tr>
                         <td>${ingresso.sessao.sala.nome}</td>
                         <td>${ingresso.lugar.fileira}${ingresso.lugar.posicao}</td>
                         <td>${ingresso.sessao.filme.nome }</td>
                         <td>${ingresso.sessao.horario}</td>
-                        <td>${ingresso.tipoDeIngresso.descricao}</td>
+                        <td>${ingresso.tipoIngresso.descricao}</td>
                         <td>${ingresso.preco}</td>
                     </tr>
                 </c:forEach>
